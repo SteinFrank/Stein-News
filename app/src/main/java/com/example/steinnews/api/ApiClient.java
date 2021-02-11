@@ -1,5 +1,9 @@
 package com.example.steinnews.api;
 
+import com.example.steinnews.models.Article;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.HostnameVerifier;
@@ -21,9 +25,12 @@ public class ApiClient {
     public  static Retrofit getApiClient(){
 
         if(retrofit == null){
+            Gson gson = new GsonBuilder().setLenient().create();
+            GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
+
             retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
                     .client(getUnsafeOkHttpClient().build())
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(gsonConverterFactory)
                     .build();
         }
         return retrofit;

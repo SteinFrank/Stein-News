@@ -3,7 +3,6 @@ package com.example.steinnews.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import javax.xml.transform.Source;
 
 public class Article {
     @SerializedName("source")
