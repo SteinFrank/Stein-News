@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.steinnews.api.ApiClient;
@@ -13,6 +14,7 @@ import com.example.steinnews.api.ApiInterface;
 import com.example.steinnews.models.Article;
 import com.example.steinnews.models.News;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
-
+        adapter = new Adapter(articles, MainActivity.this);
+        recyclerView.setAdapter(adapter);
         LoadJson();
 
     }
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
-
+                Log.d(TAG, "onResponse: " + response);
 
                 if(response.isSuccessful() && response.body().getArticle() != null){
 
@@ -66,17 +69,20 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     articles = response.body().getArticle();
-                    adapter = new Adapter(articles, MainActivity.this);
-                    recyclerView.setAdapter(adapter);
+
                     adapter.notifyDataSetChanged();
 
                 }else {
+                    Log.d(TAG, "no result");
                     Toast.makeText(MainActivity.this, "Oops!.. No Result", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                t.printStackTrace();
 
             }
         });
